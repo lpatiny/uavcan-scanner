@@ -1,24 +1,53 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import { Tabs, Tab } from 'bloomer';
+
+import HomeTab from './home/HomeTab';
+import FrameTab from './frames/FrameTab';
+import DataTab from './data/DataTab';
+
+import FrameGenerator from './frames/FrameGenerator';
+import DataGenerator from './data/DataGenerator';
 
 function App() {
+  const [frameRows, setFrameRows] = React.useState([]);
+  const [dataRows, setDataRows] = React.useState([]);
+
+  // here we will receive frames from the websocket
+  React.useEffect(() => {
+    let frameGenerator = new FrameGenerator();
+    frameGenerator.start();
+    let callback = data => {
+      setFrameRows(frameRows.concat(data));
+    };
+    frameGenerator.on('frame', callback);
+    return () => frameGenerator.off('frame', callback);
+  });
+
+  // here we will receive frames from the websocket
+  React.useEffect(() => {
+    let dataGenerator = new DataGenerator();
+    dataGenerator.start();
+    let callback = data => {
+      setDataRows(dataRows.concat(data));
+    };
+    dataGenerator.on('data', callback);
+    return () => dataGenerator.off('data', callback);
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" style={{ height: '100%' }}>
+      <Tabs defaultActiveKey="home">
+        <Tab eventKey="home" title="Home">
+          <HomeTab frameRows={frameRows} />
+        </Tab>
+        <Tab eventKey="frames" title="Frames">
+          <FrameTab frameRows={frameRows} />
+        </Tab>
+        <Tab eventKey="data" title="Data">
+          <DataTab dataRows={dataRows} />
+        </Tab>
+      </Tabs>
     </div>
   );
 }
