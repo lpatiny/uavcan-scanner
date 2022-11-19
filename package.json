@@ -13,7 +13,7 @@
     "react-apexcharts": "^1.3.3",
     "react-dom": "^16.8.6",
     "react-object-inspector": "^0.2.1",
-    "react-scripts": "3.0.1"
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
